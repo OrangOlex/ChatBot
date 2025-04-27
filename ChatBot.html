@@ -118,7 +118,7 @@
                 return;
             }
 
-            if (input.includes("you")) {
+            if (input.includes("you, your")) {
                 const botFeeling = [...positiveKeywords, ...negativeKeywords, ...neutralKeywords]
                     [Math.floor(Math.random() * (positiveKeywords.length + negativeKeywords.length + neutralKeywords.length))];
                 chatLog.innerHTML += `<p>I am feeling ${botFeeling}. I'm tired, but I enjoyed talking with you. ${goodbyes[Math.floor(Math.random() * goodbyes.length)]}</p>`;
