@@ -1,5 +1,6 @@
 import random
 
+# Instructions on how to use the chatbot
 print("""
 Welcome to the Friendly Chatbot!
 This chatbot is here to talk about your day and respond in a way that matches your mood.
@@ -9,9 +10,11 @@ If it doesn't understand, it will ask you to teach it new words and responses.
 Type 'bye' anytime to end the conversation. Have fun chatting!
 """)
 
+# Greeting options
 greetings = ["Hi there!", "Hey, how was your day?", "Hello, tell me about your day!", "Hi, what's new?", "Hey, how are you feeling today?"]
 goodbyes = ["Take care!", "Catch you later!", "Goodbye!", "See you soon!", "Have a great day!"]
 
+# Expanded keyword categories
 positive_keywords = [
     "happy", "awesome", "productive", "good", "great", "excited", "joyful", "fantastic", 
     "amazing", "wonderful", "cheerful", "thrilled", "positive", "delighted", "smiling", 
@@ -27,6 +30,7 @@ neutral_keywords = [
     "usual", "neutral", "plain", "ordinary", "indifferent", "same", "moderate", "stable"
 ]
 
+# Responses
 positive_responses = [
     "Sounds like your day was full of good vibes!", "That's awesome to hear!", "You're spreading positivity!", 
     "Your energy is contagious!", "Keep up the great mood!", "You deserve all the joy!", "Love hearing that!"
@@ -41,6 +45,10 @@ neutral_responses = [
     "Not every day has to be special, and that's alright.", "Sounds like a balanced day.", "Sometimes neutral is good, too!"
 ]
 
+# Keywords for chatbot's feelings
+bot_keywords = positive_keywords + negative_keywords + neutral_keywords
+
+# Learning dictionary
 learning = {}
 
 def chatbot():
@@ -49,15 +57,30 @@ def chatbot():
     while True:
         user_input = input("You: ").lower()
         
+        # End conversation if user types "bye"
         if user_input == "bye":
             print(random.choice(goodbyes))
             break
+
+        # Immediately end conversation if "you" is mentioned
+        if "you" in user_input:
+            bot_feeling = random.choice(bot_keywords)
+            print(f"I am feeling {bot_feeling}. I'm tired, I enjoyed talking with you. " + random.choice(goodbyes))
+            break
+
+        # Check keywords and calculate scores
+        positive_score = sum(word in user_input for word in positive_keywords)
+        negative_score = sum(word in user_input for word in negative_keywords)
+        neutral_score = sum(word in user_input for word in neutral_keywords)
         
-        if any(word in user_input for word in positive_keywords):
+        # Determine response based on scores
+        if positive_score > 1:
             print(random.choice(positive_responses))
-        elif any(word in user_input for word in negative_keywords):
+        elif negative_score > 1:
             print(random.choice(negative_responses))
-        elif any(word in user_input for word in neutral_keywords):
+        elif positive_score > 0 and negative_score > 0:
+            print(random.choice(neutral_responses))
+        elif positive_score > 0 or negative_score > 0 or neutral_score > 0:
             print(random.choice(neutral_responses))
         elif user_input in learning:
             print(learning[user_input])
@@ -73,4 +96,5 @@ def chatbot():
             elif emotion == "neutral":
                 neutral_keywords.append(user_input)
 
+# Run the chatbot
 chatbot()
