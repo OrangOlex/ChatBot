@@ -11,7 +11,7 @@ Type 'bye' anytime to end the conversation. Have fun chatting!
 """)
 
 # Greeting options
-greetings = ["Hi there!", "Hey, how was your day?", "Hello, tell me about your day!", "Hi, what's new?", "Hey, how are you feeling today?"]
+greetings = ["Hey, how was your day?", "Hello, tell me about your day!", "Hi, what's new?", "Hey, how are you feeling today?"]
 goodbyes = ["Take care!", "Catch you later!", "Goodbye!", "See you soon!", "Have a great day!"]
 
 # Expanded keyword categories
