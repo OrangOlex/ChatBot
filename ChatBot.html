@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friendly Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1 {
+            color: #4caf50;
+            text-align: center;
+        }
+        .chatbox {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .chatbox p {
+            margin: 5px 0;
+        }
+        .input-box {
+            margin-top: 10px;
+        }
+        .input-box input {
+            width: calc(100% - 100px);
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .input-box button {
+            padding: 10px 15px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .input-box button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Friendly Chatbot</h1>
+    <div class="chatbox">
+        <p>Welcome to the Friendly Chatbot!</p>
+        <p>This chatbot is here to talk about your day and respond in a way that matches your mood.</p>
+        <p>Simply type something about your day, like how you're feeling or what you've been up to.</p>
+        <p>Type 'bye' anytime to end the conversation. Have fun chatting!</p>
+        <div id="chat-log"></div>
+        <div class="input-box">
+            <input type="text" id="userInput" placeholder="Type your message here...">
+            <button onclick="processInput()">Send</button>
+        </div>
+    </div>
+    <script>
+        const greetings = ["Hey, how was your day?", "Hello, tell me about your day!", "Hi, what's new?", "Hey, how are you feeling today?"];
+        const goodbyes = ["Take care!", "Catch you later!", "Goodbye!", "See you soon!", "Have a great day!"];
+        const positiveKeywords = ["happy", "awesome", "productive", "good", "great", "excited", "joyful", "fantastic"];
+        const negativeKeywords = ["sad", "frustrated", "tired", "bad", "angry", "upset", "depressed"];
+        const neutralKeywords = ["meh", "okay", "fine", "average", "alright", "nothing", "so-so"];
+        const positiveResponses = ["Sounds like your day was full of good vibes!", "That's awesome to hear!", "You're spreading positivity!"];
+        const negativeResponses = ["Sorry to hear that, hope you're okay.", "That sounds rough, hang in there.", "I'm here if you want to talk more."];
+        const neutralResponses = ["Seems like your day was pretty average.", "Alright, nothing extraordinary but that's okay!", "Thanks for sharing your day."];
+
+        function processInput() {
+            const input = document.getElementById("userInput").value.toLowerCase();
+            const chatLog = document.getElementById("chat-log");
+
+            if (input === "bye") {
+                chatLog.innerHTML += `<p>${goodbyes[Math.floor(Math.random() * goodbyes.length)]}</p>`;
+                return;
+            }
+
+            let positiveScore = positiveKeywords.filter(word => input.includes(word)).length;
+            let negativeScore = negativeKeywords.filter(word => input.includes(word)).length;
+            let neutralScore = neutralKeywords.filter(word => input.includes(word)).length;
+
+            let response = "";
+            if (positiveScore > 1) {
+                response = positiveResponses[Math.floor(Math.random() * positiveResponses.length)];
+            } else if (negativeScore > 1) {
+                response = negativeResponses[Math.floor(Math.random() * negativeResponses.length)];
+            } else if (positiveScore > 0 || negativeScore > 0 || neutralScore > 0) {
+                response = neutralResponses[Math.floor(Math.random() * neutralResponses.length)];
+            } else {
+                response = "I didn't understand that. Could you tell me more?";
+            }
+
+            chatLog.innerHTML += `<p>${response}</p>`;
+            document.getElementById("userInput").value = "";
+        }
+    </script>
+</body>
+</html>
