@@ -137,31 +137,39 @@ function processInput() {
         response = negativeResponses[Math.floor(Math.random() * negativeResponses.length)];
     } else if (neutralScore > 0) {
         response = neutralResponses[Math.floor(Math.random() * neutralResponses.length)];
-    } else if (learning[input]) {
-        // Use a learned response if available
-        response = learning[input];
     } else {
-        // If input is not understood, teach the bot
-        chatLog.innerHTML += `<p>I didn't understand that. Can you teach me?</p>`;
-        
-        // Gather user feedback
-        const userResponse = prompt("What should I respond with?");
-        const emotion = prompt("Is this response positive, negative, or neutral?").toLowerCase();
+        // If the bot doesn't understand the input, prompt the user to teach a new keyword
+        chatLog.innerHTML += `<p>I didn't understand that. Let's add it to my vocabulary!</p>`;
 
-        // Save the learned response
-        learning[input] = userResponse;
+        // Prompt the user for a new keyword
+        const newKeyword = prompt("Please type a single keyword that represents your input:");
 
-        // Update keyword arrays
-        if (emotion === "positive") positiveKeywords.push(input);
-        else if (emotion === "negative") negativeKeywords.push(input);
-        else if (emotion === "neutral") neutralKeywords.push(input);
+        if (newKeyword) {
+            // Ask the user to categorize the keyword
+            const emotion = prompt("Is this keyword 'positive', 'negative', or 'neutral'?").toLowerCase();
 
-        response = "Thank you for teaching me! I'll remember that next time.";
+            // Add the keyword to the appropriate array
+            if (emotion === "positive") {
+                positiveKeywords.push(newKeyword);
+                response = `Thanks! I've added "${newKeyword}" as a positive word.`;
+            } else if (emotion === "negative") {
+                negativeKeywords.push(newKeyword);
+                response = `Thanks! I've added "${newKeyword}" as a negative word.`;
+            } else if (emotion === "neutral") {
+                neutralKeywords.push(newKeyword);
+                response = `Thanks! I've added "${newKeyword}" as a neutral word.`;
+            } else {
+                response = `Oops, I didn't understand the emotion. Could you try again next time?`;
+            }
+        } else {
+            response = `No keyword provided. Let me know if you'd like to try again!`;
+        }
     }
 
     chatLog.innerHTML += `<p>${response}</p>`;
     document.getElementById("userInput").value = "";
 }
+
 
     </script>
 </body>
