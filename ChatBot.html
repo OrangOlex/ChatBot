@@ -109,47 +109,60 @@
         ];
         const learning = {};
 
-        function processInput() {
-            const input = document.getElementById("userInput").value.toLowerCase();
-            const chatLog = document.getElementById("chat-log");
+function processInput() {
+    const input = document.getElementById("userInput").value.toLowerCase();
+    const chatLog = document.getElementById("chat-log");
 
-            if (input === "bye") {
-                chatLog.innerHTML += `<p>${goodbyes[Math.floor(Math.random() * goodbyes.length)]}</p>`;
-                return;
-            }
+    if (input === "bye") {
+        chatLog.innerHTML += `<p>${goodbyes[Math.floor(Math.random() * goodbyes.length)]}</p>`;
+        return;
+    }
 
-            if (input.includes("you, your")) {
-                const botFeeling = [...positiveKeywords, ...negativeKeywords, ...neutralKeywords]
-                    [Math.floor(Math.random() * (positiveKeywords.length + negativeKeywords.length + neutralKeywords.length))];
-                chatLog.innerHTML += `<p>I am feeling ${botFeeling}. I'm tired, but I enjoyed talking with you. ${goodbyes[Math.floor(Math.random() * goodbyes.length)]}</p>`;
-                return;
-            }
+    if (input.includes("you") || input.includes("your")) {
+        const botFeeling = positiveKeywords.concat(negativeKeywords, neutralKeywords)
+            [Math.floor(Math.random() * (positiveKeywords.length + negativeKeywords.length + neutralKeywords.length))];
+        chatLog.innerHTML += `<p>I am feeling ${botFeeling}. I'm here to help though! ${goodbyes[Math.floor(Math.random() * goodbyes.length)]}</p>`;
+        return;
+    }
 
-            let positiveScore = positiveKeywords.filter(word => input.includes(word)).length;
-            let negativeScore = negativeKeywords.filter(word => input.includes(word)).length;
-            let neutralScore = neutralKeywords.filter(word => input.includes(word)).length;
+    // Calculate scores for input
+    let positiveScore = positiveKeywords.some(word => new RegExp(`\\b${word}\\b`).test(input)) ? 1 : 0;
+    let negativeScore = negativeKeywords.some(word => new RegExp(`\\b${word}\\b`).test(input)) ? 1 : 0;
+    let neutralScore = neutralKeywords.some(word => new RegExp(`\\b${word}\\b`).test(input)) ? 1 : 0;
 
-            let response = "";
-            if (positiveScore > 1) {
-                response = positiveResponses[Math.floor(Math.random() * positiveResponses.length)];
-            } else if (negativeScore > 1) {
-                response = negativeResponses[Math.floor(Math.random() * negativeResponses.length)];
-            } else if (positiveScore > 0 || negativeScore > 0 || neutralScore > 0) {
-                response = neutralResponses[Math.floor(Math.random() * neutralResponses.length)];
-            } else if (learning[input]) {
-                response = learning[input];
-            } else {
-                response = "I didn't understand that. Can you teach me?";
-                learning[input] = prompt("Your response:");
-                const emotion = prompt("Is this positive, negative, or neutral?").toLowerCase();
-                if (emotion === "positive") positiveKeywords.push(input);
-                else if (emotion === "negative") negativeKeywords.push(input);
-                else if (emotion === "neutral") neutralKeywords.push(input);
-            }
+    let response = "";
+    if (positiveScore > 0) {
+        response = positiveResponses[Math.floor(Math.random() * positiveResponses.length)];
+    } else if (negativeScore > 0) {
+        response = negativeResponses[Math.floor(Math.random() * negativeResponses.length)];
+    } else if (neutralScore > 0) {
+        response = neutralResponses[Math.floor(Math.random() * neutralResponses.length)];
+    } else if (learning[input]) {
+        // Use a learned response if available
+        response = learning[input];
+    } else {
+        // If input is not understood, teach the bot
+        chatLog.innerHTML += `<p>I didn't understand that. Can you teach me?</p>`;
+        
+        // Gather user feedback
+        const userResponse = prompt("What should I respond with?");
+        const emotion = prompt("Is this response positive, negative, or neutral?").toLowerCase();
 
-            chatLog.innerHTML += `<p>${response}</p>`;
-            document.getElementById("userInput").value = "";
-        }
+        // Save the learned response
+        learning[input] = userResponse;
+
+        // Update keyword arrays
+        if (emotion === "positive") positiveKeywords.push(input);
+        else if (emotion === "negative") negativeKeywords.push(input);
+        else if (emotion === "neutral") neutralKeywords.push(input);
+
+        response = "Thank you for teaching me! I'll remember that next time.";
+    }
+
+    chatLog.innerHTML += `<p>${response}</p>`;
+    document.getElementById("userInput").value = "";
+}
+
     </script>
 </body>
 </html>
