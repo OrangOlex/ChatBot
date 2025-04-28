@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Freindly Chatbot</title>
+    <title>Friendly Chatbot</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -80,8 +80,6 @@
 <body>
     <h1>Friendly Chatbot</h1>
     <div class="chatbox">
-        <p>Welcome to the Friendly Chatbot!</p>
-        <p>Simply type something about your day, like how you're feeling or what you've been up to.</p>
         <div id="chat-log" class="chat-log"></div>
         <div class="input-box">
             <input type="text" id="userInput" placeholder="Type your message here...">
@@ -128,6 +126,11 @@
             chatLog.scrollTop = chatLog.scrollHeight; // Auto-scroll to the bottom
         }
 
+        function sendGreeting() {
+            const randomGreeting = greetings[Math.floor(Math.random() * greetings.length)];
+            addMessageToLog("Bot", randomGreeting);
+        }
+
         function processInput() {
             const input = document.getElementById("userInput").value.trim().toLowerCase();
             if (!input) return; // Prevent empty input
@@ -151,10 +154,35 @@
             } else if (neutralScore > 0) {
                 response = "Seems like your day is pretty balanced.";
             } else {
-                response = "I'm not sure how to respond. Can you add a new keyword?";
+                response = "I didn't understand that. Let's teach the bot!";
+                addMessageToLog("Bot", response);
+                
+                const newKeyword = prompt("Please type a single keyword that represents your input:");
+                if (newKeyword) {
+                    const emotion = prompt("Is this keyword 'positive', 'negative', or 'neutral'?").toLowerCase();
+                    if (emotion === "positive") {
+                        positiveKeywords.push(newKeyword);
+                        response = `Thanks! I've added "${newKeyword}" as a positive word.`;
+                    } else if (emotion === "negative") {
+                        negativeKeywords.push(newKeyword);
+                        response = `Thanks! I've added "${newKeyword}" as a negative word.`;
+                    } else if (emotion === "neutral") {
+                        neutralKeywords.push(newKeyword);
+                        response = `Thanks! I've added "${newKeyword}" as a neutral word.`;
+                    } else {
+                        response = "Oops, I didn't understand the emotion. Could you try again next time?";
+                    }
+                } else {
+                    response = "No keyword provided. Let me know if you'd like to try again!";
+                }
             }
             addMessageToLog("Bot", response);
         }
+
+        // Automatically send a greeting when the page loads
+        window.onload = function() {
+            sendGreeting();
+        };
     </script>
 </body>
 </html>
